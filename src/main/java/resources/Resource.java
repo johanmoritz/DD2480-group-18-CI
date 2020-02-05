@@ -1,33 +1,14 @@
 package resources;
 
+import buildtools.Build;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("ci")
-public class WebhookResource {
+public class Resource {
     // Create "build" class for storing and sending
-    public class Build {
-        private String message;
-
-        public Build(String name) {
-            this.message = getGreeting(name);
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String name) {
-            this.message = name;
-        }
-
-        private String getGreeting(String name) {
-            return "Hello " + name;
-        }
-
-    }
 
     // EXAMPLE GET REQUEST HANDLER
     // A list of of builds is sent by returning List<Build> instead.
@@ -37,7 +18,7 @@ public class WebhookResource {
     @GET
     @Produces("application/json")
     public Build hello() {
-        return new Build("genius!");
+        return new Build("jobID", "status", "commitSha", "url", "log");
     }
 
     // EXAMPLE POST REQUEST HANDLER
@@ -61,9 +42,10 @@ public class WebhookResource {
         // 5. store build data
         // 6. set commit status to success/fail/error
 
+        System.out.println();
         JSONObject json = new JSONObject(payload);
-        String cloneURL = json.getJSONObject("repository").getString("clone_url");
-        System.out.println(cloneURL);
+        //String cloneURL = json.getJSONObject("repository").getString("clone_url");
+        System.out.println(payload);
 
         return Response.status(200).build();
     }
