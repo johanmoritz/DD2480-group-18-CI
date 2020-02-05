@@ -8,8 +8,6 @@ import javax.ws.rs.core.Response;
 
 @Path("ci")
 public class Resource {
-    // Create "build" class for storing and sending
-
     // EXAMPLE GET REQUEST HANDLER
     // A list of of builds is sent by returning List<Build> instead.
     // TODO
