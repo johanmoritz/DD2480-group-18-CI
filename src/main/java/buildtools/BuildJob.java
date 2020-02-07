@@ -23,7 +23,7 @@ public class BuildJob {
 
         System.out.println("Running build job with id " + jobID);
         Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending);
 
         try {
             BuildJob.storage.post(pendingBuild);
