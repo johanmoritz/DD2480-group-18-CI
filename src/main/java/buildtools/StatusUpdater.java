@@ -20,19 +20,9 @@ public class StatusUpdater {
      * @param sha - sha value of commit
      * @param status - pending, success, failure, error
      */
-    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
+    public static HttpPost createHttpPost(String owner, String repo, String sha, Build.Result status, String token) {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/statuses/" + sha;
-        CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
-
-        String token;
-        try {
-            token = new BufferedReader(new FileReader("token")).readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Authorization token not found.");
-            return;
-        }
 
         String description;
         switch (status) {
@@ -64,11 +54,36 @@ public class StatusUpdater {
 
         httpPost.setHeader("Authorization", "token " + token);
 
+        return httpPost;
+    }
+
+    public static void sendStatusUpdate(HttpPost httpPost) {
+        CloseableHttpClient client = HttpClients.createDefault();
         try {
             client.execute(httpPost);
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static String getToken() {
+        String token = null;
+        try {
+            token = new BufferedReader(new FileReader("token")).readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Authorization token not found.");
+        }
+        return token;
+    }
+
+    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
+        String token = getToken();
+
+        if (token != null) {
+            HttpPost httpPost = createHttpPost(owner, repo, sha, status, token);
+            sendStatusUpdate(httpPost);
         }
     }
 
