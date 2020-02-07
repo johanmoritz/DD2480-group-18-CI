@@ -20,7 +20,7 @@ public class StatusUpdater {
      * @param sha - sha value of commit
      * @param status - pending, success, failure, error
      */
-    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
+    public static void updateStatus(String owner, String repo, String sha, Build.Result status, String jobID) {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/statuses/" + sha;
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
@@ -52,7 +52,7 @@ public class StatusUpdater {
 
         JSONObject json = new JSONObject();
         json.put("state", status);
-        json.put("target_url", "https://www.google.se");
+        json.put("target_url", "http://localhost:3000/build/" + jobID);
         json.put("description", description);
         json.put("context", "mobergliuslefors");
 
