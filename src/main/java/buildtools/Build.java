@@ -20,13 +20,15 @@ public class Build {
     private String commitSha;
     private String url;
     private List<ArrayList<String>> log;
+    private String date;
 
-    public Build(String jobID, Result status, String commitSha, String url, List<ArrayList<String>> log) {
+    public Build(String jobID, Result status, String commitSha, String url, List<ArrayList<String>> log, String date) {
         this.jobID = jobID;
         this.status = status;
         this.commitSha = commitSha;
         this.url = url;
         this.log = log;
+        this.date = date;
     }
 
     public Build(String jobID, JSONObject json) throws IOException {
@@ -34,6 +36,7 @@ public class Build {
         this.commitSha = json.getString("commitSha");
         this.url = json.getString("url");
         this.log = new ArrayList<>();
+        this.date = json.getString("date");
 
         JSONArray allLogsJson = json.getJSONArray("log");
         for (int i = 0; i < allLogsJson.length(); i++) {
@@ -86,6 +89,10 @@ public class Build {
         return log;
     }
 
+    public String getDate() {
+        return date;
+    }
+
     public void setJobID(String jobID) {
         this.jobID = jobID;
     }
@@ -104,6 +111,10 @@ public class Build {
 
     public void setLog(List<ArrayList<String>> log) {
         this.log = log;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
 }

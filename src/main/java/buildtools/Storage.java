@@ -62,6 +62,7 @@ public class Storage {
             data.put("commitSha", build.getCommitSha());
             data.put("url", build.getUrl());
             data.put("log", build.getLog());
+            data.put("date", build.getDate());
             dbJSON.put(build.getJobID(), data);
 
             // Write to JSON file
