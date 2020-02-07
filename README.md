@@ -21,6 +21,8 @@ Build list url can be found at `http://localhost:3000/` (given that the frontend
 
 
 #### Robin Bråtfors
+- Co-authored BuildJob class
+- Co-authored RunBash class
 
 #### Gabriel Gessle
 - Implemented storage and storage API for builds
