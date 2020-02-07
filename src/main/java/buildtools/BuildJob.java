@@ -2,6 +2,7 @@ package buildtools;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class BuildJob {
 
 
         System.out.println("Running build job with id " + jobID);
-        Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log);
+        Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log, "");
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending, jobID);
 
         try {
@@ -98,7 +99,6 @@ public class BuildJob {
             ArrayList<ArrayList<String>> commands = RunBash.run(buildDirectory, buildConfig);
             ArrayList<Integer> exitValues = new ArrayList<>();
 
-            boolean failedBuild = false;
 
             for (ArrayList<String> command : commands) {
                 int ev = Integer.parseInt(command.get(command.size() - 1));
@@ -108,18 +108,30 @@ public class BuildJob {
                     System.out.println(ln);
                 }
             }
-            for (int ev : exitValues) {
-                if (ev != 0) {
-                    failedBuild = true;
-                    break;
-                }
-            }
 
-            logEntry.clear();
-            if (failedBuild) {
-                //TODO: differentiate between test and build, currently we only have build implemented
-                logEntry.add("Build or test failed, an exit-value was non-zero");
-                log.add(new ArrayList<>(logEntry));
+            boolean buildFailed = false;
+            boolean testsFailed = false;
+
+            // build exit-value
+            if(exitValues.get(0) != 0)
+                buildFailed = true;
+            
+            // tests exit-value
+            if(exitValues.get(1) != 0)
+                testsFailed = true;
+
+            if (buildFailed || testsFailed) {
+                if(buildFailed) {
+                    logEntry.clear();
+                    logEntry.add("Build failed, exit-value was non-zero");
+                    log.add(new ArrayList<>(logEntry));
+                }
+                if(testsFailed) {
+                    logEntry.clear();
+                    logEntry.add("Tests failed, exit-value was non-zero");
+                    log.add(new ArrayList<>(logEntry));
+                }
+              
                 log.addAll(commands);
 
                 BuildJob.fail(jobID, log, owner, repo, commitSha);
@@ -131,7 +143,6 @@ public class BuildJob {
                 BuildJob.success(jobID, log, owner, repo, commitSha);
             }
         } else {
-
             logEntry.clear();
             logEntry.add("Failed to find a build file.");
             log.add(new ArrayList<>(logEntry));
@@ -140,6 +151,21 @@ public class BuildJob {
         }
 
         System.out.println("Finished build job with id " + jobID);
+    }
+
+    /**
+     * Gets a formatted string output of the current date and time
+     * @return YYYY-MM-DD H:M:S
+     */
+    private static String getTimeString() {
+        LocalDateTime time = LocalDateTime.now();
+        String year = "" + time.getYear();
+        String month = String.format("%02d", time.getMonthValue());
+        String day = String.format("%02d", time.getDayOfMonth());
+        String hour = String.format("%02d", time.getHour());
+        String minutes = String.format("%02d", time.getMinute());
+        String seconds = String.format("%02d", time.getSecond());
+        return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
     }
 
     /**
@@ -153,8 +179,7 @@ public class BuildJob {
      * @param commitSha
      */
     public static void error(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
-
-        Build failedBuild = new Build(jobID, Build.Result.error, commitSha, owner + "/" + repo, log);
+        Build failedBuild = new Build(jobID, Build.Result.error, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error, jobID);
 
         try {
@@ -182,7 +207,7 @@ public class BuildJob {
      */
     public static void success(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
 
-        Build succeededBuild = new Build(jobID, Build.Result.success, commitSha, owner + "/" + repo, log);
+        Build succeededBuild = new Build(jobID, Build.Result.success, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.success, jobID);
 
         try {
@@ -208,7 +233,7 @@ public class BuildJob {
      * @param commitSha
      */
     public static void fail(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
-        Build failedBuild = new Build(jobID, Build.Result.failure, commitSha, owner + "/" + repo, log);
+        Build failedBuild = new Build(jobID, Build.Result.failure, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.failure, jobID);
 
         try {
