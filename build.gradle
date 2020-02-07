@@ -14,6 +14,9 @@ repositories {
 
 dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    providedCompile 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    providedCompile 'org.slf4j:slf4j-api:1.7.30'
+    providedCompile 'org.slf4j:slf4j-simple:1.7.30'
     providedCompile 'org.eclipse.jetty.aggregate:jetty-all:9.4.9.v20180320'
     providedCompile 'org.glassfish.jersey.containers:jersey-container-servlet:2.30'
     providedCompile 'org.glassfish.jersey.inject:jersey-hk2:2.30'
@@ -24,5 +27,5 @@ dependencies {
 }
 
 application {
-    mainClassName = 'ContinuousIntegrationServer'
+    mainClassName = 'server.ContinuousIntegrationServer'
 }

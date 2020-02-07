@@ -41,3 +41,16 @@ build
 
 # IntelliJ project files
 .idea
+
+
+# Frontend
+node_modules/
+.env
+db.json
+frontend/src/env.js
+
+# Token file
+token
+
+db.json
+

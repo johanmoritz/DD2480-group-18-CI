@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 
 import java.io.File;
 
@@ -17,9 +15,13 @@ import java.util.*;
 
 public class RunBash {
 
-    // tmp desc: "main" file, returns the output of all commands
-    // buildDirectoryPath - the relative path to the directory which commands are run in
-    // buildConfigPath - the relative path to the build configuration file
+    /**
+     * Extract commands from dd.yml and runs the commands found there in bash
+     * @param buildDirectoryPath - the relative path to the directory which commands are run in
+     * @param buildConfigPath - the relative path to the build configuration file
+     * @return output of all commands
+     */
+
     public static ArrayList<ArrayList<String>> run(String buildDirectoryPath, String buildConfigPath) {
         ArrayList<ArrayList<String>> commands = new ArrayList<ArrayList<String>>();
         try {
@@ -30,8 +32,11 @@ public class RunBash {
         return commands;
     }
 
-    // tmp desc: reads through a file and searches for key words, then executes command line 
-    // below match and returns output of them all
+    /**
+     * reads through a file and searches for key words, then executes command line
+     * below match and returns output of them all
+     * @throws Exception
+     */
     private static ArrayList<ArrayList<String>> readThis(String buildDirectoryPath, String buildConfigPath) throws Exception {
         BufferedReader reader;
         ArrayList<ArrayList<String>> commands = new ArrayList<ArrayList<String>>();
@@ -56,7 +61,11 @@ public class RunBash {
         return commands;
     }
 
-    // tmp desc: returns true if String match is found in String line.
+    /**
+     * Find the Instructions in a file
+     * @param line - A string of a line
+     * @param match - Keyword
+     */
     private static boolean exactMatch(String line, String match) {
         String pattern = "\\b" + match + "\\b";
         Pattern p = Pattern.compile(pattern);
@@ -64,7 +73,9 @@ public class RunBash {
         return m.find();
     }
 
-    // tmp desc: reads output and errors of the command execution
+    /**
+     * reads output and errors of the command execution
+     */
     private static ArrayList<String> output(InputStream in) throws Exception {
         String ln;
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -75,28 +86,12 @@ public class RunBash {
         return output;
     }
 
-    private void printBash(ArrayList<ArrayList<String>> commands) {
-        int exitValue;
-        ArrayList<Integer> exitValues = new ArrayList<Integer>();
-        int i = 1;
-        for(ArrayList<String> cmd : commands) {
-            int ev = Integer.parseInt(cmd.get(cmd.size()-1));
-            exitValues.add(ev);
-            System.out.println("**************************");
-            System.out.println("Command " + i);
-            cmd.remove(cmd.size()-1);
-            for(String s : cmd) {
-                System.out.println(s);
-            }
-            System.out.println("Exit value: " + ev);
-            System.out.println("**************************");
-            i++;
-        }
-    }
-
-
-
-    // tmp desc: runs the String as a bash command and returns the outputs, errors and exit value
+    /**
+     * This functions runs the String as a bash command
+     * @param line - String with the command to be run in bash
+     * @return output, errors, exit value
+     * @throws Exception
+     */
     private static ArrayList<String> runCommand(String line, String buildDirectoryPath) throws Exception {
 
         String[] arr = line.split(" ");
