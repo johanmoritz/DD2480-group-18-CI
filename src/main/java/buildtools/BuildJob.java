@@ -23,7 +23,7 @@ public class BuildJob {
 
         System.out.println("Running build job with id " + jobID);
         Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending, jobID);
 
         try {
             BuildJob.storage.post(pendingBuild);
@@ -133,7 +133,7 @@ public class BuildJob {
     public static void error(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
 
         Build failedBuild = new Build(jobID, Build.Result.error, commitSha, owner + "/" + repo, log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error, jobID);
 
         try {
             BuildJob.storage.post(failedBuild);
@@ -161,7 +161,7 @@ public class BuildJob {
     public static void success(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
 
         Build succeededBuild = new Build(jobID, Build.Result.success, commitSha, owner + "/" + repo, log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.success);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.success, jobID);
 
         try {
             BuildJob.storage.post(succeededBuild);
@@ -187,7 +187,7 @@ public class BuildJob {
      */
     public static void fail(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
         Build failedBuild = new Build(jobID, Build.Result.failure, commitSha, owner + "/" + repo, log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.failure);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.failure, jobID);
 
         try {
             BuildJob.storage.post(failedBuild);
