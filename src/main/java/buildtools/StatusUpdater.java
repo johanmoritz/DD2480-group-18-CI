@@ -20,7 +20,7 @@ public class StatusUpdater {
      * @param sha - sha value of commit
      * @param status - pending, success, failure, error
      */
-    public static void createStatusUpdate(String owner, String repo, String sha, Build.Result status, String jobID) {
+    public static void updateStatus(String owner, String repo, String sha, Build.Result status, String jobID) {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/statuses/" + sha;
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
