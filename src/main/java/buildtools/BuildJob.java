@@ -77,7 +77,6 @@ public class BuildJob {
             ArrayList<ArrayList<String>> commands = RunBash.run(buildDirectory, buildConfig);
             ArrayList<Integer> exitValues = new ArrayList<>();
 
-            boolean failedBuild = false;
 
             for (ArrayList<String> command : commands) {
                 int ev = Integer.parseInt(command.get(command.size() - 1));
@@ -87,18 +86,30 @@ public class BuildJob {
                     System.out.println(ln);
                 }
             }
-            for (int ev : exitValues) {
-                if (ev != 0) {
-                    failedBuild = true;
-                    break;
-                }
-            }
 
-            logEntry.clear();
-            if (failedBuild) {
-                //TODO: differentiate between test and build, currently we only have build implemented
-                logEntry.add("Build or test failed, an exit-value was non-zero");
-                log.add(new ArrayList<>(logEntry));
+            boolean buildFailed = false;
+            boolean testsFailed = false;
+
+            // build exit-value
+            if(exitValues.get(0) != 0)
+                buildFailed = true;
+            
+            // tests exit-value
+            if(exitValues.get(1) != 0)
+                testsFailed = true;
+
+            if (buildFailed || testsFailed) {
+                if(buildFailed) {
+                    logEntry.clear();
+                    logEntry.add("Build failed, exit-value was non-zero");
+                    log.add(new ArrayList<>(logEntry));
+                }
+                if(testsFailed) {
+                    logEntry.clear();
+                    logEntry.add("Tests failed, exit-value was non-zero");
+                    log.add(new ArrayList<>(logEntry));
+                }
+              
                 log.addAll(commands);
 
                 BuildJob.fail(jobID, log, owner, repo, commitSha);
@@ -110,7 +121,6 @@ public class BuildJob {
                 BuildJob.success(jobID, log, owner, repo, commitSha);
             }
         } else {
-
             logEntry.clear();
             logEntry.add("Failed to find a build file.");
             log.add(new ArrayList<>(logEntry));
