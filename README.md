@@ -18,6 +18,9 @@ Build list url can be found at `http://localhost:3000/` (given that the frontend
 
 ### Contributions
 #### Adam Björnberg
+- Setup project with gradle and added all dependencies.
+- Authored REST API skeleton.
+- Authored commit status updater class.
 
 
 #### Robin Bråtfors
