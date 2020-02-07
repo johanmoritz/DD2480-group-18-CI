@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## ENV
-To run the project, make sure you have a env.js file in root directory with the following code
+To run the project, make sure you have a env.js file in `/frontend/src` with the following code
 ```javascript 
 const env = {
   REACT_APP_URL:<url to ci job server>, 
