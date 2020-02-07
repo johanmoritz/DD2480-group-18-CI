@@ -23,6 +23,9 @@ Build list url can be found at `http://localhost:3000/` (given that the frontend
 #### Robin Bråtfors
 
 #### Gabriel Gessle
+- Implemented storage and storage API for builds
+- Created frontend application and integrated with backend API
+- Co-authored backend API
 
 #### Kasper Liu
 - Co-authored Status-Updater class
