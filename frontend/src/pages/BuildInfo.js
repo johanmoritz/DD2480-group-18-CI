@@ -37,6 +37,7 @@ export default function BuildInfo(props) {
                   <span style={{color: "red"}}>{build.status}</span>
               }</p>
               <p style={{fontSize: "24px", color: "black"}}>SHA: {build.commitSha}</p>
+              <p style={{fontSize: "24px", color: "black"}}>Build date: {build.date}</p>
             <Typography
                     component="p"
                     variant="h4"
