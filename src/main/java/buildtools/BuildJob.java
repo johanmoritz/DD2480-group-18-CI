@@ -8,12 +8,11 @@ import java.util.List;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
-
-import resources.Storage;
+import server.ContinuousIntegrationServer;
 
 public class BuildJob {
     public static String BUILD_CONFIG_FILE_NAME = ".dd.yml";
-    private static Storage storage = new Storage();
+    private static Storage storage = ContinuousIntegrationServer.storage;
 
     public static void run(String jobID, String cloneURL, String branchRef, String owner, String repo, String commitSha) {
         List<ArrayList<String>> log = new ArrayList<>();
@@ -24,7 +23,7 @@ public class BuildJob {
 
         System.out.println("Running build job with id " + jobID);
         Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log);
-        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error);
+        StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending);
 
         try {
             BuildJob.storage.post(pendingBuild);
@@ -75,7 +74,7 @@ public class BuildJob {
 
         if (hasBuildConfig) {
             ArrayList<ArrayList<String>> commands = RunBash.run(buildDirectory, buildConfig);
-            ArrayList<Integer> exitValues = new ArrayList<Integer>();
+            ArrayList<Integer> exitValues = new ArrayList<>();
 
             boolean failedBuild = false;
 
@@ -88,8 +87,10 @@ public class BuildJob {
                 }
             }
             for (int ev : exitValues) {
-                if (ev != 0)
+                if (ev != 0) {
                     failedBuild = true;
+                    break;
+                }
             }
 
             logEntry.clear();
@@ -122,6 +123,7 @@ public class BuildJob {
     /**
      * This function is called if the build cannot be compiled (or error while compiling?).
      * Updates commit status to "error" and stores the build in the database with its log.
+     *
      * @param jobID
      * @param log
      * @param owner
@@ -149,6 +151,7 @@ public class BuildJob {
     /**
      * This function is called if the build successfully compiles and passes all tests.
      * Updates commit status to "success" and stores the build in the database with its log.
+     *
      * @param jobID
      * @param log
      * @param owner
@@ -172,10 +175,10 @@ public class BuildJob {
         System.out.println(log);
     }
 
-    // TODO
     /**
      * This function is called if the build compiles but fails one or more tests.
      * Updates commit status to "failure" and stores the build in the database with its log.
+     *
      * @param jobID
      * @param log
      * @param owner

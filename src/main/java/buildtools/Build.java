@@ -1,5 +1,9 @@
 package buildtools;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +27,43 @@ public class Build {
         this.commitSha = commitSha;
         this.url = url;
         this.log = log;
+    }
+
+    public Build(String jobID, JSONObject json) throws IOException {
+        this.jobID = jobID;
+        this.commitSha = json.getString("commitSha");
+        this.url = json.getString("url");
+        this.log = new ArrayList<>();
+
+        JSONArray allLogsJson = json.getJSONArray("log");
+        for (int i = 0; i < allLogsJson.length(); i++) {
+            JSONArray logCommandJSON = allLogsJson.getJSONArray(i);
+            ArrayList<String> logCommand = new ArrayList<>();
+
+            for (int j = 0; j < logCommandJSON.length(); j++) {
+                logCommand.add(logCommandJSON.getString(j));
+            }
+            log.add(logCommand);
+        }
+
+        // fix status
+        String tempStatus = json.getString("status");
+        switch (tempStatus) {
+            case "success":
+                status = Build.Result.success;
+                break;
+            case "pending":
+                status = Build.Result.pending;
+                break;
+            case "failure":
+                status = Build.Result.failure;
+                break;
+            case "error":
+                status = Build.Result.error;
+                break;
+            default:
+                throw new IOException("Invalid 'status' in database");
+        }
     }
 
     public String getJobID() {
