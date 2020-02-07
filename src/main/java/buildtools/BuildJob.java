@@ -14,6 +14,28 @@ public class BuildJob {
     public static String BUILD_CONFIG_FILE_NAME = ".dd.yml";
     private static Storage storage = ContinuousIntegrationServer.storage;
 
+     /**
+      * The main entry point for the ci build job. Runs the 
+      * entire build flow sequentially, which might take some
+      * time to complete. The method is therefore intended to
+      * be called in an asyncronous setting. The build state
+      * can be retrieved through the Storage class as well
+      * as the commit status update on github.
+      *
+      * Build job flow:
+      * 1. Clone repo
+      * 2. Find build config file in root directory
+      * 3. Parse and run commands
+      * 4. Notify github of result
+      * 5. Update database
+      *
+      * @param jobID - the unique ID of the job
+      * @param cloneURL - url to clone the github repository from
+      * @param branchRef - the unique identifier of the branch
+      * @param owner - owner of repo
+      * @param repo - name of repo
+      * @param commitSha - sha of the latest commit
+      */
     public static void run(String jobID, String cloneURL, String branchRef, String owner, String repo, String commitSha) {
         List<ArrayList<String>> log = new ArrayList<>();
         ArrayList<String> logEntry = new ArrayList<>();
