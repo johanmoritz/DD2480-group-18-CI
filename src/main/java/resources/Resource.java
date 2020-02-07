@@ -3,6 +3,7 @@ package resources;
 import buildtools.Build;
 import buildtools.BuildJob;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -121,16 +122,30 @@ public class Resource {
         // 4. run tests
         // 5. store build data
         // 6. set commit status to success/fail/error
+        //
 
         String jobID = UUID.randomUUID().toString();
 
+
         JSONObject json = new JSONObject(payload);
         JSONObject repository = json.getJSONObject("repository");
+
+        try {
+            json.getJSONObject("hook");
+            System.out.println("New webhook: " + repository.getString("full_name"));
+            return Response.status(200).build();
+        } catch (JSONException ignored) {}
+
+        String owner = repository.getJSONObject("owner").getString("name");
+        String repo = repository.getString("name");
+        String commitSha = json.getJSONArray("commits").getJSONObject(0).getString("id");
+
         String branchRef = json.getString("ref");
         String cloneUrl = repository.getString("clone_url");
 
+
         // Run build jobs asynchronously
-        Runnable job = () -> BuildJob.run(jobID, cloneUrl, branchRef);
+        Runnable job = () -> BuildJob.run(jobID, cloneUrl, branchRef, owner, repo, commitSha);
         jobsQueue.execute(job);
 
         return Response.status(200).build();

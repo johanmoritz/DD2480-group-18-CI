@@ -29,8 +29,8 @@ public class Build {
         return jobID;
     }
 
-    public Result getStatus() {
-        return status;
+    public String getStatus() {
+        return status.toString();
     }
 
     public String getCommitSha() {
