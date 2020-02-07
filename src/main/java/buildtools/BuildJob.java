@@ -2,6 +2,7 @@ package buildtools;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class BuildJob {
 
 
         System.out.println("Running build job with id " + jobID);
-        Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log);
+        Build pendingBuild = new Build(jobID, Build.Result.pending, commitSha, "", log, "");
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.pending, jobID);
 
         try {
@@ -121,6 +122,21 @@ public class BuildJob {
     }
 
     /**
+     * Gets a formatted string output of the current date and time
+     * @return YYYY-MM-DD H:M:S
+     */
+    private static String getTimeString() {
+        LocalDateTime time = LocalDateTime.now();
+        String year = "" + time.getYear();
+        String month = String.format("%02d", time.getMonthValue());
+        String day = String.format("%02d", time.getDayOfMonth());
+        String hour = String.format("%02d", time.getHour());
+        String minutes = String.format("%02d", time.getMinute());
+        String seconds = String.format("%02d", time.getSecond());
+        return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+    }
+
+    /**
      * This function is called if the build cannot be compiled (or error while compiling?).
      * Updates commit status to "error" and stores the build in the database with its log.
      *
@@ -131,8 +147,7 @@ public class BuildJob {
      * @param commitSha
      */
     public static void error(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
-
-        Build failedBuild = new Build(jobID, Build.Result.error, commitSha, owner + "/" + repo, log);
+        Build failedBuild = new Build(jobID, Build.Result.error, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.error, jobID);
 
         try {
@@ -160,7 +175,7 @@ public class BuildJob {
      */
     public static void success(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
 
-        Build succeededBuild = new Build(jobID, Build.Result.success, commitSha, owner + "/" + repo, log);
+        Build succeededBuild = new Build(jobID, Build.Result.success, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.success, jobID);
 
         try {
@@ -186,7 +201,7 @@ public class BuildJob {
      * @param commitSha
      */
     public static void fail(String jobID, List<ArrayList<String>> log, String owner, String repo, String commitSha) {
-        Build failedBuild = new Build(jobID, Build.Result.failure, commitSha, owner + "/" + repo, log);
+        Build failedBuild = new Build(jobID, Build.Result.failure, commitSha, owner + "/" + repo, log, getTimeString());
         StatusUpdater.updateStatus(owner, repo, commitSha, Build.Result.failure, jobID);
 
         try {
