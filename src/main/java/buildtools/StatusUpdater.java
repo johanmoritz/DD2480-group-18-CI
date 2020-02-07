@@ -57,6 +57,10 @@ public class StatusUpdater {
         return httpPost;
     }
 
+    /**
+     * Sends a httpPost
+     * @param httpPost - a http POST request to be sent
+     */
     public static void sendStatusUpdate(HttpPost httpPost) {
         CloseableHttpClient client = HttpClients.createDefault();
         try {
@@ -67,6 +71,10 @@ public class StatusUpdater {
         }
     }
 
+    /**
+     * Reads token from token file
+     * @return token string
+     */
     public static String getToken() {
         String token = null;
         try {
@@ -78,6 +86,13 @@ public class StatusUpdater {
         return token;
     }
 
+    /**
+     * Sends a httpPost to GitHub
+     * @param owner - name of repository owner
+     * @param repo - name of repository
+     * @param sha - sha code of commit
+     * @param status - status to be set
+     */
     public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
         String token = getToken();
 
