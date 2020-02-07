@@ -19,3 +19,7 @@ Build list url can be found at `http://localhost:3000/` (given that the frontend
 - Contributed to the investigation of webhook
 
 #### Johan Moritz
+- Setup Travis for continuous integration
+- Implement skeleton for asyncronous build jobs
+- Updated the state representation of build jobs
+- Wrote webpage for displaying single build jobs
