@@ -20,25 +20,27 @@ public class StatusUpdater {
      * @param sha - sha value of commit
      * @param status - pending, success, failure, error
      */
+    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
+        String token = getToken();
+        if (token !=  null) {
+            sendHttpPost(createHttpPost(owner, repo, sha, status, token));
+        }
+    }
+
+    /**
+     * Creates a HTTP POST request to GitHubs commit status API.
+     * @param owner - name of repository owner
+     * @param repo - name of repository
+     * @param sha - commit sha value
+     * @param status - commit status to be set
+     * @param token - repository owner's OAuth authorization token
+     * @return HttpPost object configured for the GitHub commit status API
+     */
     public static HttpPost createHttpPost(String owner, String repo, String sha, Build.Result status, String token) {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/statuses/" + sha;
         HttpPost httpPost = new HttpPost(url);
 
-        String description;
-        switch (status) {
-            case pending:
-                description = "Pending";
-                break;
-            case success:
-                description = "Success";
-                break;
-            case failure:
-                description = "Failure";
-                break;
-            default:
-                description = "Error";
-
-        }
+        String description = getStatusDescription(status);
 
         JSONObject json = new JSONObject();
         json.put("state", status);
@@ -53,15 +55,14 @@ public class StatusUpdater {
         }
 
         httpPost.setHeader("Authorization", "token " + token);
-
         return httpPost;
     }
 
     /**
-     * Sends a httpPost
+     * Sends a HTTP Post request
      * @param httpPost - a http POST request to be sent
      */
-    public static void sendStatusUpdate(HttpPost httpPost) {
+    public static void sendHttpPost(HttpPost httpPost) {
         CloseableHttpClient client = HttpClients.createDefault();
         try {
             client.execute(httpPost);
@@ -87,19 +88,27 @@ public class StatusUpdater {
     }
 
     /**
-     * Sends a httpPost to GitHub
-     * @param owner - name of repository owner
-     * @param repo - name of repository
-     * @param sha - sha code of commit
-     * @param status - status to be set
+     * Gets the commit status description depending on build status.
+     * @param status - the build status
+     * @return commit status description string
      */
-    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
-        String token = getToken();
+    public static String getStatusDescription(Build.Result status) {
+        String description;
+        switch (status) {
+            case pending:
+                description = "Pending";
+                break;
+            case success:
+                description = "Success";
+                break;
+            case failure:
+                description = "Failure";
+                break;
+            default:
+                description = "Error";
 
-        if (token != null) {
-            HttpPost httpPost = createHttpPost(owner, repo, sha, status, token);
-            sendStatusUpdate(httpPost);
         }
+        return description;
     }
 
 }
