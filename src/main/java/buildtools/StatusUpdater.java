@@ -20,10 +20,10 @@ public class StatusUpdater {
      * @param sha - sha value of commit
      * @param status - pending, success, failure, error
      */
-    public static void updateStatus(String owner, String repo, String sha, Build.Result status) {
+    public static void updateStatus(String owner, String repo, String sha, Build.Result status, String jobID) {
         String token = getToken();
         if (token !=  null) {
-            sendHttpPost(createHttpPost(owner, repo, sha, status, token));
+            sendHttpPost(createHttpPost(owner, repo, sha, status, token, jobID));
         }
     }
 
@@ -36,7 +36,12 @@ public class StatusUpdater {
      * @param token - repository owner's OAuth authorization token
      * @return HttpPost object configured for the GitHub commit status API
      */
-    public static HttpPost createHttpPost(String owner, String repo, String sha, Build.Result status, String token) {
+    public static HttpPost createHttpPost(String owner,
+                                          String repo,
+                                          String sha,
+                                          Build.Result status,
+                                          String token,
+                                          String jobID) {
         String url = "https://api.github.com/repos/" + owner + "/" + repo + "/statuses/" + sha;
         HttpPost httpPost = new HttpPost(url);
 
@@ -44,7 +49,7 @@ public class StatusUpdater {
 
         JSONObject json = new JSONObject();
         json.put("state", status);
-        json.put("target_url", "https://www.google.se");
+        json.put("target_url", "http://localhost:3000/build/" + jobID);
         json.put("description", description);
         json.put("context", "mobergliuslefors");
 

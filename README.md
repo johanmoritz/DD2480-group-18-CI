@@ -1,4 +1,4 @@
-# DD2480-group-18-CI
+# DD2480-group-18-CI (Ci test)
 A simple continuos integration solution, created for assignment 2 at KTH course DD2480. Spring of 2020.
 
 ## Scripts
@@ -18,11 +18,19 @@ Build list url can be found at `http://localhost:3000/` (given that the frontend
 
 ### Contributions
 #### Adam Björnberg
+- Setup project with gradle and added all dependencies.
+- Authored REST API skeleton.
+- Authored commit status updater class.
 
 
 #### Robin Bråtfors
+- Co-authored BuildJob class
+- Co-authored RunBash class
 
 #### Gabriel Gessle
+- Implemented storage and storage API for builds
+- Created frontend application and integrated with backend API
+- Co-authored backend API
 
 #### Kasper Liu
 - Co-authored Status-Updater class
