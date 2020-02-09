@@ -41,8 +41,9 @@ public class StatusUpdaterTests {
         String commitSha = "afda99d6c1462f549e27dd86c0a6918194c4a7f6";
         Build.Result status = Build.Result.success;
         String token = "9d876fs987f9s87fd6s987fsd98f7s698f7ds69f";
+        String jobID = "testjobID12312313";
 
-        HttpPost httpPost = StatusUpdater.createHttpPost(owner, repo, commitSha, status, token);
+        HttpPost httpPost = StatusUpdater.createHttpPost(owner, repo, commitSha, status, token, jobID);
 
         assertEquals("POST", httpPost.getMethod());
         assertEquals("api.github.com", httpPost.getURI().getAuthority());
@@ -59,13 +60,14 @@ public class StatusUpdaterTests {
         }
         assertTrue(hasAuthHeader);
         try {
-            assertEquals(
-                    new JSONObject(EntityUtils.toString(httpPost.getEntity(), "UTF-8")).toString(),
-                    new JSONObject("{" +
-                            "state:'success'," +
-                            "target_url:'https://www.google.se'," +
-                            "description:'Success'," +
-                            "context:'mobergliuslefors'}").toString()
+            assertTrue(
+                    new JSONObject(EntityUtils.toString(httpPost.getEntity(), "UTF-8")).similar(
+                            new JSONObject("{" +
+                                    "state:'success'," +
+                                    "target_url:'http://localhost:3000/build/testjobID12312313'," +
+                                    "description:'Success'," +
+                                    "context:'mobergliuslefors'}")
+                    )
             );
         } catch (IOException e) {
             e.printStackTrace();

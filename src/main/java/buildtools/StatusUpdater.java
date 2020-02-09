@@ -32,7 +32,7 @@ public class StatusUpdater {
      * @param owner - name of repository owner
      * @param repo - name of repository
      * @param sha - commit sha value
-     * @param status - commit status to be set
+     * @param status - commit status
      * @param token - repository owner's OAuth authorization token
      * @return HttpPost object configured for the GitHub commit status API
      */
