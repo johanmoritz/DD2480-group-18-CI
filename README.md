@@ -51,7 +51,7 @@ To build the java service, you can run either `./gradlew assemble` or `./gradlew
 To run the test suite, either run `./gradlew test` or `./gradlew build`.
 
 #### Running the service
-To start up the Java service, run `./gradlew run PORT_NUMBER`. Where`PORT_NUMBER` is the port on which you're planning to run the frontend locally (this will be 3000 for most people). 
+To start up the Java service, run `./gradlew run --args='PORT_NUMBER'`. Where`PORT_NUMBER` is the port on which you're planning to run the frontend locally (this will be 3000 for most people). 
 
 To start up the frontend, go into `/frontend` and run `npm start`. This should start a node server accessible on `localhost:3000`. More instructions for the frontend can be found in `/frontend/README.md`.
 
