@@ -29,7 +29,7 @@ public class ContinuousIntegrationServer {
         try {
             server = new Server(Integer.parseInt(args[0]));
         } catch (Exception e) {
-            System.err.println("Error reading port number: ./gradlew args='<port number>'");
+            System.err.println("Error reading port number: ./gradlew --args='PORT_NUMBER'");
             return;
         }
         ServletContextHandler servletContextHandler = new ServletContextHandler(NO_SESSIONS);
