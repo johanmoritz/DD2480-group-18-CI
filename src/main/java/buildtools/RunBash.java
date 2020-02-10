@@ -92,7 +92,7 @@ public class RunBash {
      * @return output, errors, exit value
      * @throws Exception
      */
-    private static ArrayList<String> runCommand(String line, String buildDirectoryPath) throws Exception {
+    public static ArrayList<String> runCommand(String line, String buildDirectoryPath) throws Exception {
 
         String[] arr = line.split(" ");
 
