@@ -25,8 +25,13 @@ public class ContinuousIntegrationServer {
 
     public static void main(String[] args) {
 
-        Server server = new Server(8018);
-
+        Server server;
+        try {
+            server = new Server(Integer.parseInt(args[0]));
+        } catch (Exception e) {
+            System.err.println("Error reading port number: ./gradlew args='<port number>'");
+            return;
+        }
         ServletContextHandler servletContextHandler = new ServletContextHandler(NO_SESSIONS);
 
         servletContextHandler.setContextPath("/");
