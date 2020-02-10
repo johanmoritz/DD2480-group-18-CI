@@ -20,11 +20,17 @@ public class StatusUpdaterTests {
      */
     @Test
     public void test0() {
+        String owner = "Kappenn";
+        String repo = "HelloWorld";
+        String commitSha = "40bbbdf251c8a1003e78959cc95a6f8d72795a8c";
+        Build.Result status = Build.Result.success;
+        String token = "c88cc863ad888b0d91ea5ba749f1a234d9054e6b";
+        String jobID = "testjobID12312313";
+        HttpPost request = StatusUpdater.createHttpPost(owner, repo, commitSha, status, token, jobID);
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet request = new HttpGet("https://api.github.com/orgs/octokit/repos");
         try {
             CloseableHttpResponse response = client.execute(request);
-            assertEquals(200, response.getStatusLine().getStatusCode());
+            assertEquals(201, response.getStatusLine().getStatusCode());
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
