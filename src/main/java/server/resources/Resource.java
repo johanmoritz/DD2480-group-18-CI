@@ -49,9 +49,6 @@ public class Resource {
     @Consumes("application/x-www-form-urlencoded")
     public Response push(@FormParam("payload") String payload) {
 
-        // TODO
-        // 4. run tests
-
         String jobID = UUID.randomUUID().toString();
 
 
@@ -71,10 +68,11 @@ public class Resource {
         String branchRef = json.getString("ref");
         String cloneUrl = repository.getString("clone_url");
 
-
-        // Run build jobs asynchronously
-        Runnable job = () -> BuildJob.run(jobID, cloneUrl, branchRef, owner, repo, commitSha);
-        jobsQueue.execute(job);
+        if (!repo.equals("testing_mobergliuslefors_do_not_build")) {
+            // Run build jobs asynchronously
+            Runnable job = () -> BuildJob.run(jobID, cloneUrl, branchRef, owner, repo, commitSha);
+            jobsQueue.execute(job);
+        }
 
         return Response.status(200).build();
     }
