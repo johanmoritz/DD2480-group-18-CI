@@ -1,5 +1,7 @@
 # mobergliuslefors CI
-A simple (as in non-feature-complete), localhosted continuous integration service created for assignment 2 at KTH course DD2480 - spring of 2020. The service is to be used by hooking it up to a Github commit push webhook, and will run the scripts inside the `.dd.yml` config file and report the result back as a commit status update on Github. There are two main parts of the service; a build job written in Java and a frontend in React. The two parts are connected through a database with JSON objects as well as a `Jetty` server. The purpose of the frontend is to give more context to the commit status on Github, where the latter links to a corresponding web page with build logs etc.
+A simple (as in non-feature-complete), localhosted continuous integration service created for assignment 2 at KTH course DD2480 - spring of 2020. The service is to be used by hooking it up to a Github commit push webhook, and will run the scripts inside the `.dd.yml` config file and report the result back as a commit status update on Github. 
+
+There are two main parts of the service; a build job written in Java and a frontend in React. The two parts are connected through a database with JSON objects as well as a `Jetty` server. The purpose of the frontend is to give more context to the commit status on Github, where the latter links to a corresponding web page with build logs etc.
 
 ## Getting Started
 Follow these instructions to set up the service in a development environment. This setup will let you connect to _one_ repository on github.
