@@ -23,10 +23,14 @@ public class StatusUpdaterTests {
         String owner = "Kappenn";
         String repo = "HelloWorld";
         String commitSha = "40bbbdf251c8a1003e78959cc95a6f8d72795a8c";
-        Build.Result status = Build.Result.success;
-        String token = "c88cc863ad888b0d91ea5ba749f1a234d9054e6b";
+        Build.Result status = Build.Result.error;
+        String tokenReverse = "1a05a3edac662a963f399776c71805d141561f8b";
+        StringBuilder token = new StringBuilder();
+        for (int i = tokenReverse.length() - 1; i >= 0; --i) {
+            token.append(tokenReverse.charAt(i));
+        }
         String jobID = "testjobID12312313";
-        HttpPost request = StatusUpdater.createHttpPost(owner, repo, commitSha, status, token, jobID);
+        HttpPost request = StatusUpdater.createHttpPost(owner, repo, commitSha, status, token.toString(), jobID);
         CloseableHttpClient client = HttpClients.createDefault();
         try {
             CloseableHttpResponse response = client.execute(request);
