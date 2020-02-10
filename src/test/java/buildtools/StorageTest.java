@@ -45,6 +45,13 @@ public class StorageTest {
   public void test0() {
       // Create fake data
     Storage s = new Storage();
+
+    try {
+        s.clear();
+    } catch (IOException e) {
+        Assert.fail("Error, couldn't clear database");
+    }
+
     List<ArrayList<String>> l = new ArrayList<ArrayList<String>>();
     ArrayList<String> a1 = new ArrayList<String>();
     ArrayList<String> a2 = new ArrayList<String>();
@@ -151,6 +158,7 @@ public class StorageTest {
   public void test2() {
       // Create fake data but for same key in database as in test0 "testjob"
     Storage s = new Storage();
+    
     List<ArrayList<String>> l = new ArrayList<ArrayList<String>>();
     ArrayList<String> a1 = new ArrayList<String>();
     ArrayList<String> a2 = new ArrayList<String>();
@@ -220,5 +228,65 @@ public class StorageTest {
     assertEquals(testRow, oldData.getJSONArray("log").getJSONArray(0).getString(0));
     buildRow = result.getJSONArray("log").getJSONArray(1).getString(0);
     assertEquals(buildRow, oldData.getJSONArray("log").getJSONArray(1).getString(0));
+  }
+
+  // Tests getAll
+  @Test
+  public void test3() {
+      Storage s = new Storage();
+      JSONObject result = new JSONObject();
+      try {
+        result = s.getAll();
+      } catch (IOException e) {
+        Assert.fail("Error, couldn't get build");
+      }
+
+      assertEquals(result.length(), 2);
+  }
+
+  // Tests clearing database
+  @Test 
+  public void test4() {
+    // Create fake data
+    Storage s = new Storage();
+    List<ArrayList<String>> l = new ArrayList<ArrayList<String>>();
+    ArrayList<String> a1 = new ArrayList<String>();
+    ArrayList<String> a2 = new ArrayList<String>();
+    a1.add("test4build");
+    a2.add("test4test");
+    l.add(a1);
+    l.add(a2);
+
+    String key = "test4job";
+    Build.Result buildResult = Build.Result.failure;
+    String sha = "test4sha";
+    String url = "test4url";
+    String date = "2020-02-03 20:00:00";
+
+    Build b = new Build(key, buildResult, sha, url, l, date);
+
+    // Store data
+    try {
+        s.post(b);
+    } catch(IOException e) {
+        Assert.fail("Error, couldn't build job");
+    }
+
+    // Clear it
+    try {
+        s.clear();
+    } catch (IOException e) {
+        Assert.fail("Error, couldn't clear database");
+    }
+
+    // Fetch it
+    JSONObject result = new JSONObject();
+    try {
+        result = s.getAll();
+    } catch (IOException e) {
+        Assert.fail("Error, couldn't get build");
+    }
+
+    assertEquals(result.length(), 0);
   }
 }

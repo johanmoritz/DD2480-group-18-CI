@@ -113,4 +113,17 @@ public class Storage {
             return parseJSON(fileName);
         }
     }
+
+    /**
+     * Clears database
+     */
+    public void clear() throws IOException {
+        JSONObject data = new JSONObject();
+        try (FileWriter file = new FileWriter(fileName)) {
+            file.write(data.toString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
